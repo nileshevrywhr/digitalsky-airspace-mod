@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Airport Zone Mapper</title>
+    <title>DGCA Airport Zones</title>
     <script src='https://apis.mappls.com/advancedmaps/api/5e98d1f926bbc5cc784fe133192db144/map_sdk?layer=vector&v=3.0&libraries=geoanalytics&callback=initmap' defer async></script>
     <style>
         #map {
@@ -32,29 +32,36 @@
                     });
 
 
-            // Hardcoded airport coordinates
-            const airports = [
-                { name: "Navi Mumbai Int'l Airport", lat: 18.9952, lng: 73.065 }, // Navi Mumbai
-                { name: "Chhatrapati Shivaji Maharaj Int'l Airport", lat: 19.0887, lng: 72.8656 }, // Mumbai
-                { name: "Indira Gandhi Int'l International Airport", lat: 28.557162, lng: 77.102658 } // Delhi
-            ];
+                // Hardcoded airport coordinates
+                const airports = [
+                    { name: "Navi Mumbai Int'l Airport", lat: 18.9952, lng: 73.065 }, // Navi Mumbai
+                    { name: "Chhatrapati Shivaji Maharaj Int'l Airport", lat: 19.0887, lng: 72.8656 }, // Mumbai
+                    { name: "Indira Gandhi Int'l International Airport", lat: 28.557162, lng: 77.102658 } // Delhi
+                ];
 
-            // Mark the airports and their zones
-            airports.forEach(airport => {
-                markAirportZone(map, airport.lat, airport.lng, airport.name);
-            });
-            
-            // Optionally mark a zone around the user's location
-            markUserZone(map, userLat, userLng);
-                }, error => {
-                    console.error("Error fetching location:", error);
+                // Mark the airports and their zones
+                airports.forEach(airport => {
+                    markAirportZone(map, airport.lat, airport.lng, airport.name);
                 });
+            
+                // Optionally mark a zone around the user's location
+                markUserZone(map, userLat, userLng);
+                    }, error => {
+                        console.error("Error fetching location:", error);
+                    });
             } else {
                 alert("Geolocation is not supported by this browser.");
             }
         }
 
         function markAirportZone(map, lat, lng, name) {
+
+            // Optionally add a marker for the airport
+            new mappls.Marker({
+                position: { lat: lat, lng: lng },
+                title: name,
+                map: map,
+            });
 
             // Marking a 5 km radius (Red Zone)
             new mappls.Circle({
@@ -63,7 +70,7 @@
                 radius: 5000, // 5 km
                 fillColor: 'rgba(255, 0, 0, 0.5)', // Semi-transparent red
                 strokeColor: '#FF0000',
-                strokeWeight: 2,
+                strokeWeight: 4,
             });
 
             // Marking a 12 km radius (Yellow Zone)
@@ -73,16 +80,12 @@
                 radius: 12000, // 12 km
                 fillColor: 'rgba(255, 255, 0, 0.5)', // Semi-transparent yellow
                 strokeColor: '#FFFF00',
-                strokeWeight: 2,
+                strokeWeight: 3,
             });
 
-            // Optionally add a marker for the airport
-            new mappls.Marker({
-                position: { lat: lat, lng: lng },
-                title: name,
-                map: map,
-            });
         }
+
+        
     </script>
 </body>
 </html>
