@@ -1,17 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DGCA Airport Zones</title>
-    <script src='https://apis.mappls.com/advancedmaps/api/5e98d1f926bbc5cc784fe133192db144/map_sdk?layer=vector&v=3.0&libraries=geoanalytics&callback=initmap' defer async></script>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <script
+        src='https://apis.mappls.com/advancedmaps/api/5e98d1f926bbc5cc784fe133192db144/map_sdk?layer=vector&v=3.0&libraries=geoanalytics&callback=initmap'
+        defer async></script>
     <style>
         #map {
-            height: 100vh; /* Full height of the viewport */
-            width: 100%; /* Full width */
+            height: 100vh;
+            /* Full height of the viewport */
+            width: 100%;
+            /* Full width */
         }
     </style>
-</head><access_token></access_token>
+</head>
+<access_token></access_token>
+
 <body>
     <div id='map'></div>
 
@@ -20,50 +28,54 @@
 
             // Check if Geolocation is supported
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(position => {
-                    const userLat = position.coords.latitude;
-                    const userLng = position.coords.longitude;
+                navigator.geolocation.getCurrentPosition(
+                    position => {
+                        const userLat = position.coords.latitude;
+                        const userLng = position.coords.longitude;
 
-                    // Initialize the map centered on the user's location
-                    var map = new mappls.Map('map', {
-                        center: [userLat, userLng],
-                        zoom: 12,
-                        location: true,
-                    });
+                        // Initialize the map centered on the user's location
+                        var map = new mappls.Map('map', {
+                            center: [userLat, userLng],
+                            zoom: 12,
+                            location: true,
+                        });
 
 
-                // Hardcoded airport coordinates
-                const airports = [
-                    { name: "Navi Mumbai Int'l Airport", lat: 18.9952, lng: 73.065 }, // Navi Mumbai
-                    { name: "Chhatrapati Shivaji Maharaj Int'l Airport", lat: 19.0887, lng: 72.8656 }, // Mumbai
-                    { name: "Indira Gandhi Int'l International Airport", lat: 28.557162, lng: 77.102658 } // Delhi
-                ];
+                        // Hardcoded airport coordinates
+                        const airports = [
+                            { name: "Navi Mumbai Int'l Airport", lat: 18.9952, lng: 73.065 }, // Navi Mumbai
+                            { name: "Chhatrapati Shivaji Maharaj Int'l Airport", lat: 19.0887, lng: 72.8656 }, // Mumbai
+                            { name: "Indira Gandhi Int'l International Airport", lat: 28.557162, lng: 77.102658 } // Delhi
+                        ];
 
-                // Mark the airports and their zones
-                airports.forEach(airport => {
-                    markAirportZone(map, airport.lat, airport.lng, airport.name);
-                });
-            
-                // Optionally mark a zone around the user's location
-                markUserZone(map, userLat, userLng);
+                        // Mark the airports and their zones
+                        airports.forEach(airport => {
+                            markAirportZone(map, airport.lat, airport.lng, airport.name);
+                        });
+
+                        // Mark a 20km zone around the user's location
+                        markUserZone(map, userLat, userLng);
+
                     }, error => {
                         console.error("Error fetching location:", error);
-                    });
-            } else {
+                    }
+                );
+            }
+            else {
                 alert("Geolocation is not supported by this browser.");
             }
         }
 
         function markAirportZone(map, lat, lng, name) {
 
-            // Optionally add a marker for the airport
-            new mappls.Marker({
-                position: { lat: lat, lng: lng },
-                title: name,
-                map: map,
-            });
+            // Adds a marker for the airport
+            // new mappls.Marker({
+            //     position: { lat: lat, lng: lng },
+            //     title: name,
+            //     map: map
+            // });
 
-            // Marking a 5 km radius (Red Zone)
+            // Marks a 5 km radius (Red Zone)
             new mappls.Circle({
                 center: { lat: lat, lng: lng },
                 map: map,
@@ -73,7 +85,7 @@
                 strokeWeight: 4,
             });
 
-            // Marking a 12 km radius (Yellow Zone)
+            // Marks a 12 km radius (Yellow Zone)
             new mappls.Circle({
                 center: { lat: lat, lng: lng },
                 map: map,
@@ -85,7 +97,26 @@
 
         }
 
-        
+        function markUserZone(map, lat, lng) {
+            // Marking a zone around the user's location (20 km radius)
+            new mappls.Circle({
+                center: { lat: lat, lng: lng }, // Correct format for center
+                radius: 20000, // 20 km radius
+                fillColor: 'rgba(0, 0, 0, 0)', // No fill color
+                strokeColor: '#000000', // Strong black stroke color
+                strokeWeight: 2, // Stroke weight (thickness of the boundary)
+                map: map // Pass the map instance here
+            });
+
+            // Add a blue dot marker for the user's location
+            new mappls.Marker({
+                position: { lat: lat, lng: lng }, // Correct format for position
+                title: "My Location", // Title for the marker
+                map: map, // Pass the map instance here
+            });
+        }
+
     </script>
 </body>
+
 </html>
